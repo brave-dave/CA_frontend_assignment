@@ -22,3 +22,7 @@ export function testHook<ARGS extends any[], RETURN>(
     return returnValue;
   };
 }
+
+export async function wait(ms?: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
