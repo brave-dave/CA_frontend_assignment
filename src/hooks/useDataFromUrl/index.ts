@@ -1,13 +1,13 @@
 import React from "react";
-import useEffectOnce from "../useEffectOnce";
 
-export default function useDataFromUrl<DATA>(url: string): DATA | undefined {
+export default function useDataFromUrl<DATA>(url?: string): DATA | undefined {
   const [data, setData] = React.useState<DATA>();
-  useEffectOnce(() => {
-    fetch(url)
-      .then((res) => res.json())
-      .then((newData) => setData(newData));
-  });
+  React.useEffect(() => {
+    if (url)
+      fetch(url)
+        .then((res) => res.json())
+        .then((newData) => setData(newData));
+  }, [url]);
 
   return data;
 }

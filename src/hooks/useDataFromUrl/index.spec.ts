@@ -1,6 +1,6 @@
-import React from "react";
+import { waitFor } from "@testing-library/react";
 import useDataFromUrl from ".";
-import { testHook, wait } from "../../testsUtils";
+import { testHook } from "../../testsUtils";
 
 function mockFetch<DATA>(mockData?: DATA) {
   global.fetch = jest.fn(() =>
@@ -13,22 +13,38 @@ function mockFetch<DATA>(mockData?: DATA) {
 }
 
 describe("hooks/useDataFromUrl", () => {
-  it("should call `fetch` with the API url and relative path", () => {
-    const url = "https://rickandmortyapi.com/api/character";
-    const mockedFetch = mockFetch();
-    testHook(useDataFromUrl, url);
+  describe("when it has a `url`", () => {
+    it("should call `fetch` with the API url and relative path", async () => {
+      const url = "https://rickandmortyapi.com/api/character";
+      const mockedFetch = mockFetch();
+      await testHook(useDataFromUrl, url);
 
-    expect(mockedFetch.mock.calls[0][0]).toEqual(url);
+      expect(mockedFetch.mock.calls[0][0]).toEqual(url);
+    });
+
+    it("should return the data from fetch", async () => {
+      const data = { a: 0, b: 0 };
+      const url = "https://rickandmortyapi.com/api/character";
+      mockFetch(data);
+      const getHookValue = await testHook(useDataFromUrl, url);
+
+      expect(getHookValue()).toEqual(data);
+    });
   });
 
-  it("should return the data from fetch", async () => {
-    const data = { a: 0, b: 0 };
-    const path = "/api/character";
-    mockFetch(data);
-    const getHookValue = testHook(useDataFromUrl, path);
+  describe("when it does not have a `url`", () => {
+    it("should not call `fetch`", () => {
+      const mockedFetch = mockFetch();
+      testHook(useDataFromUrl);
 
-    await wait(); // Wait for data to be set by fetch
+      expect(mockedFetch).toHaveBeenCalledTimes(0);
+    });
 
-    expect(getHookValue()).toEqual(data);
+    it("should return no data from fetch", async () => {
+      mockFetch({ a: 0, b: 0 });
+      const getHookValue = await testHook(useDataFromUrl);
+
+      expect(getHookValue()).toEqual(undefined);
+    });
   });
 });

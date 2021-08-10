@@ -15,14 +15,14 @@ export function testHook<ARGS extends any[], RETURN>(
     return null;
   };
 
-  render(<Component />);
+  return new Promise<() => RETURN>((resolve) => {
+    render(<Component />);
 
-  return () => {
-    if (returnValue instanceof Error) throw returnValue;
-    return returnValue;
-  };
-}
-
-export async function wait(ms?: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+    setTimeout(() => {
+      resolve(() => {
+        if (returnValue instanceof Error) throw returnValue;
+        return returnValue;
+      });
+    });
+  });
 }
