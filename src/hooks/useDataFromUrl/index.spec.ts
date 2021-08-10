@@ -1,5 +1,5 @@
 import React from "react";
-import useDataFromAPI from ".";
+import useDataFromUrl from ".";
 import { testHook, wait } from "../../testsUtils";
 
 function mockFetch<DATA>(mockData?: DATA) {
@@ -12,21 +12,20 @@ function mockFetch<DATA>(mockData?: DATA) {
   return global.fetch as jest.Mock;
 }
 
-describe("hooks/useDataFromAPI", () => {
+describe("hooks/useDataFromUrl", () => {
   it("should call `fetch` with the API url and relative path", () => {
-    const path = "/api/character";
-    const expectedUrl = "https://rickandmortyapi.com/api/character";
+    const url = "https://rickandmortyapi.com/api/character";
     const mockedFetch = mockFetch();
-    testHook(useDataFromAPI, path);
+    testHook(useDataFromUrl, url);
 
-    expect(mockedFetch.mock.calls[0][0]).toEqual(expectedUrl);
+    expect(mockedFetch.mock.calls[0][0]).toEqual(url);
   });
 
   it("should return the data from fetch", async () => {
     const data = { a: 0, b: 0 };
     const path = "/api/character";
     mockFetch(data);
-    const getHookValue = testHook(useDataFromAPI, path);
+    const getHookValue = testHook(useDataFromUrl, path);
 
     await wait(); // Wait for data to be set by fetch
 
