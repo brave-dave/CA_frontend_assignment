@@ -7,7 +7,7 @@ import {
   Characters,
   CharacterResponseDataError,
 } from "./types";
-import useCharacterUrl from "../useCharacterUrl";
+import useCharacterUrlAndPage from "../useCharacterUrlAndPage";
 
 const initialPageData: PageData = {
   characters: [],
@@ -38,7 +38,7 @@ function isResponseDataError(
 }
 
 export default function usePageData(): PageData {
-  const url = useCharacterUrl();
+  const url = useCharacterUrlAndPage();
   const data = useDataFromUrl<CharacterResponseData>(url);
   const pageData = React.useMemo<PageData>(() => {
     if (!url) return errorPageData;
