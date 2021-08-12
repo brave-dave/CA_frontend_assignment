@@ -1,7 +1,19 @@
-import { CharactersActionType, UpdateCharactersAction } from "./types";
+import {
+  CharactersActionType,
+  UpdateCharactersAction,
+  UpdateCharactersCurrentPageAction,
+  UpdateCharactersCurrentPagePayload,
+  UpdateCharactersPayload,
+} from "./types";
 
 export function updateCharacters(
-  props: Omit<UpdateCharactersAction, "type">
+  payload: UpdateCharactersPayload
 ): UpdateCharactersAction {
-  return { type: CharactersActionType.UPDATE, ...props };
+  return { type: CharactersActionType.UPDATE, ...payload };
+}
+
+export function updateCharactersCurrentPage(
+  payload: UpdateCharactersCurrentPagePayload
+): UpdateCharactersCurrentPageAction {
+  return { type: CharactersActionType.UPDATE_CURRENT_PAGE, ...payload };
 }

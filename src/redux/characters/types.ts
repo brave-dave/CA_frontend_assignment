@@ -21,13 +21,21 @@ export interface Character {
 
 export enum CharactersActionType {
   UPDATE = "characters/update",
+  UPDATE_CURRENT_PAGE = "characters/update_current_page",
 }
 
-export interface UpdateCharactersPayload
-  extends Required<CharacterState> {
+export interface UpdateCharactersPayload extends Required<CharacterState> {
   list: ReadonlyArray<Character>;
 }
 
 export interface UpdateCharactersAction extends UpdateCharactersPayload {
   type: CharactersActionType.UPDATE;
+}
+
+export interface UpdateCharactersCurrentPagePayload
+  extends Pick<CharacterState, "currentPage"> {}
+
+export interface UpdateCharactersCurrentPageAction
+  extends UpdateCharactersCurrentPagePayload {
+  type: CharactersActionType.UPDATE_CURRENT_PAGE;
 }

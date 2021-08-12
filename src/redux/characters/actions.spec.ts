@@ -1,6 +1,10 @@
-import { updateCharacters } from "./actions";
-import { CharactersActionType, UpdateCharactersPayload } from "./types";
-import { mockCharacter } from "../testMocks";
+import { updateCharacters, updateCharactersCurrentPage } from "./actions";
+import {
+  CharactersActionType,
+  UpdateCharactersCurrentPagePayload,
+  UpdateCharactersPayload,
+} from "./types";
+import { createTestActionCallback, mockCharacter } from "../testMocks";
 
 describe("redux/characters/actions", () => {
   describe("updateCharacters", () => {
@@ -8,11 +12,6 @@ describe("redux/characters/actions", () => {
       currentPage: 1,
       pages: 53,
       list: [mockCharacter()],
-    };
-
-    type ItEachProps<K extends keyof UpdateCharactersPayload> = {
-      prop: K;
-      expectedValue: UpdateCharactersPayload[K];
     };
 
     it.each`
@@ -23,14 +22,34 @@ describe("redux/characters/actions", () => {
       ${"list"}        | ${payload.list}
     `(
       "should return the right $prop",
-      <K extends keyof UpdateCharactersPayload>({
-        prop,
-        expectedValue,
-      }: ItEachProps<K>) => {
-        const action = updateCharacters(payload);
+      createTestActionCallback<UpdateCharactersPayload>(
+        ({ prop, expectedValue }) => {
+          const action = updateCharacters(payload);
 
-        expect(action[prop]).toEqual(expectedValue);
-      }
+          expect(action[prop]).toEqual(expectedValue);
+        }
+      )
+    );
+  });
+
+  describe("updateCharactersCurrentPage", () => {
+    const payload: UpdateCharactersCurrentPagePayload = {
+      currentPage: 1,
+    };
+
+    it.each`
+      prop             | expectedValue
+      ${"type"}        | ${CharactersActionType.UPDATE_CURRENT_PAGE}
+      ${"currentPage"} | ${payload.currentPage}
+    `(
+      "should return the right $prop",
+      createTestActionCallback<UpdateCharactersCurrentPagePayload>(
+        ({ prop, expectedValue }) => {
+          const action = updateCharactersCurrentPage(payload);
+
+          expect(action[prop]).toEqual(expectedValue);
+        }
+      )
     );
   });
 });

@@ -35,3 +35,18 @@ export function mockCharacter(
     ...partialCharacter,
   };
 }
+
+type TestActionCallbackProps<K, V> = {
+  prop: K;
+  expectedValue: V;
+};
+
+type TestActionCallback<K, V> = (props: TestActionCallbackProps<K, V>) => void;
+
+export function createTestActionCallback<PAYLOAD>(
+  callback: TestActionCallback<keyof PAYLOAD, PAYLOAD[keyof PAYLOAD]>
+) {
+  return <K extends keyof PAYLOAD>(
+    props: TestActionCallbackProps<K, PAYLOAD[K]>
+  ) => callback(props);
+}
