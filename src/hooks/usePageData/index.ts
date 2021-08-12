@@ -10,14 +10,10 @@ import {
 import useCharacterUrlAndPage from "../useCharacterUrlAndPage";
 
 const initialPageData: PageData = {
-  characters: [],
-  pages: 0,
   loading: true,
 };
 
 const errorPageData: PageData = {
-  ...initialPageData,
-  loading: false,
   isNotFound: true,
 };
 
@@ -38,18 +34,18 @@ function isResponseDataError(
 }
 
 export default function usePageData(): PageData {
-  const url = useCharacterUrlAndPage();
+  const { url, currentPage } = useCharacterUrlAndPage();
   const data = useDataFromUrl<CharacterResponseData>(url);
   const pageData = React.useMemo<PageData>(() => {
-    if (!url) return errorPageData;
+    if (!url || !currentPage) return errorPageData;
     if (!data) return initialPageData;
     if (isResponseDataError(data)) return errorPageData;
     const { results, info } = data;
     const { pages } = info;
     const characters = mapCharactersResults(results);
 
-    return { pages, characters, loading: false };
-  }, [url, data]);
+    return { pages, characters, currentPage, loading: false };
+  }, [url, data, currentPage]);
 
   return pageData;
 }

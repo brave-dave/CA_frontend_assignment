@@ -1,4 +1,4 @@
-import useCharacterUrl from "../useCharacterUrl";
+import useCharacterUrlAndPage from "../useCharacterUrlAndPage";
 import useDataFromUrl from "../useDataFromUrl";
 import { testHook } from "../../testsUtils";
 import usePageData from ".";
@@ -8,14 +8,14 @@ import {
   CharacterResponseDataResult,
   PageData,
 } from "./types";
-jest.mock("../useCharacterUrl", () => jest.fn());
+jest.mock("../useCharacterUrlAndPage", () => jest.fn());
 jest.mock("../useDataFromUrl", () => jest.fn());
 
 const characterUrl = "https://rickandmortyapi.com/api/character";
 
-function mockUseCharacterUrl(url?: string) {
-  const mockedUseCharacterUrl = useCharacterUrl as jest.Mock;
-  mockedUseCharacterUrl.mockImplementationOnce(() => url);
+function mockUseCharacterUrl<T>(data: T) {
+  const mockedUseCharacterUrl = useCharacterUrlAndPage as jest.Mock;
+  mockedUseCharacterUrl.mockImplementationOnce(() => data);
 }
 
 function mockUseDataFromUrl<T>(data: T) {
@@ -24,6 +24,7 @@ function mockUseDataFromUrl<T>(data: T) {
 }
 
 describe("hooks/usePageData", () => {
+  const currentPage = 1;
   const mockCharacterResponse: CharacterResponseDataResult = {
     name: "string",
     status: "string",
@@ -54,19 +55,15 @@ describe("hooks/usePageData", () => {
     error: "There is nothing here",
   };
   const mockExpectedDataInitial: PageData = {
-    characters: [],
-    pages: 0,
     loading: true,
   };
   const mockExpectedDataSuccess: PageData = {
     characters: [mockCharacter],
     pages: 34,
+    currentPage,
     loading: false,
   };
   const mockExpectedDataError: PageData = {
-    characters: [],
-    pages: 0,
-    loading: false,
     isNotFound: true,
   };
 
@@ -81,7 +78,7 @@ describe("hooks/usePageData", () => {
     "when the url is `$url` and the fetched data is `$dataFromUrl`",
     ({ url, dataFromUrl, expectedData }) => {
       it(`should return \`${expectedData}\``, async () => {
-        mockUseCharacterUrl(url);
+        mockUseCharacterUrl({ url, currentPage });
         mockUseDataFromUrl(dataFromUrl);
         const getPageData = await testHook(usePageData);
 

@@ -6,7 +6,7 @@ const characterUrl = "https://rickandmortyapi.com/api/character";
 
 export default function useCharacterUrlAndPage() {
   const { page } = useParams<PageParams>();
-  const pageNumber = React.useMemo(() => {
+  const currentPage = React.useMemo(() => {
     if (page === undefined) return 1;
     const pageNumberValue = Number(page);
     const pageIsInvalid = isNaN(pageNumberValue) || pageNumberValue < 1;
@@ -14,9 +14,9 @@ export default function useCharacterUrlAndPage() {
   }, [page]);
 
   const url = React.useMemo(
-    () => (pageNumber ? `${characterUrl}?page=${pageNumber}` : undefined),
-    [pageNumber]
+    () => (currentPage ? `${characterUrl}?page=${currentPage}` : undefined),
+    [currentPage]
   );
 
-  return { url, pageNumber };
+  return { url, currentPage };
 }

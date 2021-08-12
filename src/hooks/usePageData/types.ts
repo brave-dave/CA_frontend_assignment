@@ -38,9 +38,25 @@ export type CharacterResponseData =
   | CharacterResponseDataSuccess
   | CharacterResponseDataError;
 
-export interface PageData {
+interface PageDataBase {
+  loading?: false;
+  isNotFound?: false;
+}
+
+interface PageDataSuccess extends PageDataBase {
   characters: Characters;
   pages: number;
-  loading: boolean;
-  isNotFound?: boolean;
+  currentPage: number;
+  loading?: false;
+  isNotFound?: false;
 }
+
+interface PageDataLoading extends Omit<PageDataBase, "loading"> {
+  loading: true;
+}
+
+interface PageDataError extends Omit<PageDataBase, "isNotFound"> {
+  isNotFound: true;
+}
+
+export type PageData = PageDataSuccess | PageDataLoading | PageDataError;
