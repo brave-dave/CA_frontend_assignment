@@ -1,6 +1,6 @@
 import { updateCharacters } from "./actions";
 import charactersReducer, { charactersInitialState } from "./reducer";
-import { mockCharacter } from "./testMocks";
+import { mockCharacter } from "../testMocks";
 import { UpdateCharactersPayload } from "./types";
 
 const mockAction: any = {};

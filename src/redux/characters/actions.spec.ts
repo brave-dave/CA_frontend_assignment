@@ -1,6 +1,6 @@
 import { updateCharacters } from "./actions";
 import { CharactersActionType, UpdateCharactersPayload } from "./types";
-import { mockCharacter } from "./testMocks";
+import { mockCharacter } from "../testMocks";
 
 describe("redux/characters/actions", () => {
   describe("updateCharacters", () => {
