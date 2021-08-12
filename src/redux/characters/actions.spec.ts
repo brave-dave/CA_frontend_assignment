@@ -1,32 +1,18 @@
 import { updateCharacters } from "./actions";
-import {
-  Character,
-  CharactersActionType,
-  UpdateCharactersActionPayload,
-} from "./types";
+import { CharactersActionType, UpdateCharactersPayload } from "./types";
+import { mockCharacter } from "./testMocks";
 
 describe("redux/characters/actions", () => {
   describe("updateCharacters", () => {
-    const mockCharacter: Character = {
-      name: "string",
-      status: "string",
-      species: "string",
-      type: "string",
-      gender: "string",
-      origin: 1,
-      location: 3,
-      image: "string",
-      episode: [5],
-    };
-    const payload: UpdateCharactersActionPayload = {
+    const payload: UpdateCharactersPayload = {
       currentPage: 1,
       pages: 53,
-      list: [mockCharacter],
+      list: [mockCharacter()],
     };
 
-    type ItEachProps<K extends keyof UpdateCharactersActionPayload> = {
+    type ItEachProps<K extends keyof UpdateCharactersPayload> = {
       prop: K;
-      expectedValue: UpdateCharactersActionPayload[K];
+      expectedValue: UpdateCharactersPayload[K];
     };
 
     it.each`
@@ -37,7 +23,7 @@ describe("redux/characters/actions", () => {
       ${"list"}        | ${payload.list}
     `(
       "should return the right $prop",
-      <K extends keyof UpdateCharactersActionPayload>({
+      <K extends keyof UpdateCharactersPayload>({
         prop,
         expectedValue,
       }: ItEachProps<K>) => {

@@ -7,6 +7,7 @@ export type CharacterState = {
 };
 
 export interface Character {
+  id: number;
   name: string;
   status: string;
   species: string;
@@ -22,8 +23,11 @@ export enum CharactersActionType {
   UPDATE = "characters/update",
 }
 
-export interface UpdateCharactersActionPayload extends Required<CharacterState> {}
+export interface UpdateCharactersPayload
+  extends Required<CharacterState> {
+  list: ReadonlyArray<Character>;
+}
 
-export interface UpdateCharactersAction extends UpdateCharactersActionPayload {
+export interface UpdateCharactersAction extends UpdateCharactersPayload {
   type: CharactersActionType.UPDATE;
 }
