@@ -1,89 +1,82 @@
-import useCharacterUrlAndPage from "../useCharacterUrlAndPage";
-import useDataFromUrl from "../useDataFromUrl";
-import { testHook } from "../../testsUtils";
+// import useCharacterUrlAndPage from "../useCharacterUrlAndPage";
+// import useDataFromUrl from "../useDataFromUrl";
+// import { testHook } from "../../testsUtils";
+// import usePageData from ".";
+// import {
+//   Character,
+//   CharacterResponseData,
+//   CharacterResponseDataResult,
+//   PageData,
+// } from "./types";
+// jest.mock("../useCharacterUrlAndPage", () => jest.fn());
+// jest.mock("../useDataFromUrl", () => jest.fn());
+
+import { useDispatch, useSelector } from "react-redux";
 import usePageData from ".";
-import {
-  Character,
-  CharacterResponseData,
-  CharacterResponseDataResult,
-  PageData,
-} from "./types";
-jest.mock("../useCharacterUrlAndPage", () => jest.fn());
-jest.mock("../useDataFromUrl", () => jest.fn());
+import { ReduxState } from "../../redux";
+import { mockCharacter, mockReduxState } from "../../redux/testMocks";
+import { testHook } from "../../testsUtils";
 
-const characterUrl = "https://rickandmortyapi.com/api/character";
+jest.mock("react-redux");
 
-function mockUseCharacterUrl<T>(data: T) {
-  const mockedUseCharacterUrl = useCharacterUrlAndPage as jest.Mock;
-  mockedUseCharacterUrl.mockImplementationOnce(() => data);
+function mockUseSelector(state: ReduxState = mockReduxState()) {
+  (useSelector as jest.Mock).mockImplementation((selector) => selector(state));
 }
 
-function mockUseDataFromUrl<T>(data: T) {
-  const mockedUseDataFromUrl = useDataFromUrl as jest.Mock;
-  mockedUseDataFromUrl.mockImplementationOnce(() => data);
+function mockUseDispatch(dispatch = jest.fn()) {
+  (useDispatch as jest.Mock).mockImplementation(() => dispatch);
+  return dispatch;
 }
 
 describe("hooks/usePageData", () => {
-  const currentPage = 1;
-  const mockCharacterResponse: CharacterResponseDataResult = {
-    name: "string",
-    status: "string",
-    species: "string",
-    type: "string",
-    gender: "string",
-    origin: { url: "string" },
-    location: { url: "string" },
-    image: "string",
-    episode: [],
-  };
-  const mockCharacter: Character = {
-    name: "string",
-    status: "string",
-    species: "string",
-    type: "string",
-    gender: "string",
-    origin: "string",
-    location: "string",
-    image: "string",
-    episode: [],
-  };
-  const mockDataSuccess: CharacterResponseData = {
-    info: { pages: 34 },
-    results: [mockCharacterResponse],
-  };
-  const mockDataError: CharacterResponseData = {
-    error: "There is nothing here",
-  };
-  const mockExpectedDataInitial: PageData = {
-    loading: true,
-  };
-  const mockExpectedDataSuccess: PageData = {
-    characters: [mockCharacter],
-    pages: 34,
-    currentPage,
-    loading: false,
-  };
-  const mockExpectedDataError: PageData = {
-    isNotFound: true,
-  };
+  describe("while it's loading", () => {
+    it("should return loading pageData", async () => {
+      mockUseSelector();
+      mockUseDispatch(jest.fn(() => new Promise(() => {})));
+      const getPageData = await testHook(usePageData, { currentPage: 1 });
 
-  describe.each`
-    url             | dataFromUrl        | expectedData
-    ${characterUrl} | ${undefined}       | ${mockExpectedDataInitial}
-    ${undefined}    | ${undefined}       | ${mockExpectedDataError}
-    ${undefined}    | ${mockDataSuccess} | ${mockExpectedDataError}
-    ${characterUrl} | ${mockDataError}   | ${mockExpectedDataError}
-    ${characterUrl} | ${mockDataSuccess} | ${mockExpectedDataSuccess}
-  `(
-    "when the url is `$url` and the fetched data is `$dataFromUrl`",
-    ({ url, dataFromUrl, expectedData }) => {
-      it(`should return \`${expectedData}\``, async () => {
-        mockUseCharacterUrl({ url, currentPage });
-        mockUseDataFromUrl(dataFromUrl);
-        const getPageData = await testHook(usePageData);
+      expect(getPageData()).toEqual({ loading: true });
+    });
+  });
 
-        expect(getPageData()).toEqual(expectedData);
-      });
-    }
-  );
+  describe("when page is not found", () => {
+    it("should return error pageData", async () => {
+      mockUseSelector(
+        mockReduxState({
+          characters: { pagesStatuses: { 1: { isNotFound: true } } },
+        })
+      );
+      mockUseDispatch();
+      const getPageData = await testHook(usePageData, { currentPage: 1 });
+
+      expect(getPageData()).toEqual({ isNotFound: true });
+    });
+  });
+
+  describe("when page has no data", () => {
+    it("should return error pageData", async () => {
+      mockUseSelector();
+      mockUseDispatch();
+      const getPageData = await testHook(usePageData, { currentPage: 1 });
+
+      expect(getPageData()).toEqual({ isNotFound: true });
+    });
+  });
+
+  describe("when page has data", () => {
+    it("should return success pageData", async () => {
+      const pages = 50;
+      const content = [mockCharacter()];
+      const pagesStatuses = { 1: { content } };
+      mockUseSelector(
+        mockReduxState({
+          characters: { pages, pagesStatuses },
+        })
+      );
+      mockUseDispatch();
+      const getPageData = await testHook(usePageData, { currentPage: 1 });
+
+      expect(getPageData()).toEqual({ pages, content });
+    });
+  });
 });

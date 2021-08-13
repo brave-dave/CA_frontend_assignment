@@ -1,3 +1,3 @@
 export type MappedList<I> = {
-  [K: number]: I;
+  [K: number]: I | undefined;
 };

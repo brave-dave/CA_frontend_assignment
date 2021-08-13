@@ -1,51 +1,54 @@
 import React from "react";
-import useDataFromUrl from "../useDataFromUrl";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  CharacterResponseData,
-  PageData,
-  CharacterResponseDataResults,
-  Characters,
-  CharacterResponseDataError,
-} from "./types";
-import useCharacterUrlAndPage from "../useCharacterUrlAndPage";
+  Character,
+  fetchCharacters,
+  selectCharactersPagesStatuses,
+  selectCharactersPages,
+} from "../../redux/characters";
+import useEffectOnce from "../useEffectOnce";
 
-const initialPageData: PageData = {
-  loading: true,
-};
+type UsePageDataConfig = { currentPage: number };
 
-const errorPageData: PageData = {
-  isNotFound: true,
-};
-
-function mapCharactersResults(
-  results: CharacterResponseDataResults
-): Characters {
-  return results.map((character) => ({
-    ...character,
-    origin: character.origin.url,
-    location: character.location.url,
-  }));
+interface PageDataSuccess {
+  content: ReadonlyArray<Character>;
+  pages?: number;
 }
 
-function isResponseDataError(
-  data: CharacterResponseData
-): data is CharacterResponseDataError {
-  return data.hasOwnProperty("error");
+interface PageDataLoading {
+  loading: true;
 }
 
-export default function usePageData(): PageData {
-  const { url, currentPage } = useCharacterUrlAndPage();
-  const data = useDataFromUrl<CharacterResponseData>(url);
-  const pageData = React.useMemo<PageData>(() => {
-    if (!url || !currentPage) return errorPageData;
-    if (!data) return initialPageData;
-    if (isResponseDataError(data)) return errorPageData;
-    const { results, info } = data;
-    const { pages } = info;
-    const characters = mapCharactersResults(results);
+interface PageDataError {
+  isNotFound: true;
+}
 
-    return { pages, characters, currentPage, loading: false };
-  }, [url, data, currentPage]);
+type PageData = PageDataSuccess | PageDataError | PageDataLoading;
 
-  return pageData;
+export default function usePageData({
+  currentPage,
+}: UsePageDataConfig): PageData {
+  const [loading, setLoading] = React.useState(true);
+  const dispatch = useDispatch();
+  const pages = useSelector(selectCharactersPages);
+  const pageStatuses = useSelector(selectCharactersPagesStatuses);
+
+  const pageStatus = React.useMemo(
+    () => pageStatuses[currentPage] || { isNotFound: true, content: undefined },
+    [pageStatuses, currentPage]
+  );
+
+  useEffectOnce(() => {
+    (async () => {
+      await dispatch(fetchCharacters(currentPage));
+      setLoading(false);
+    })();
+  });
+
+  if (loading) return { loading };
+
+  const { isNotFound, content = [] } = pageStatus;
+  if (isNotFound) return { isNotFound };
+
+  return { content, pages };
 }
