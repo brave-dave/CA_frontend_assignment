@@ -13,7 +13,7 @@ export function mockReduxState({
     characters: {
       pages: 65,
       currentPage: 1,
-      list: {},
+      pagesContent: {},
       ...characters,
     },
   };

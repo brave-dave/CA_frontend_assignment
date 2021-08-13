@@ -3,9 +3,10 @@ import { mockCharacter } from "../testMocks";
 import { CharactersState } from "./types";
 import {
   selectCharactersCurrentPage,
-  selectCharactersList,
+  selectCharactersPageContent,
   selectCharactersPages,
   selectCharactersState,
+  selectShouldFetchPageSelector,
 } from "./selectors";
 
 describe("redux/characters/selectors", () => {
@@ -16,7 +17,7 @@ describe("redux/characters/selectors", () => {
       const expectedCharacterState: CharactersState = {
         pages: 77,
         currentPage: 2,
-        list: { [characterId]: character },
+        pagesContent: { 1: [character] },
       };
 
       const reduxState = mockReduxState({
@@ -40,7 +41,7 @@ describe("redux/characters/selectors", () => {
   });
 
   describe("selectCharactersPages", () => {
-    it("should return the charactersState", () => {
+    it("should return the pages", () => {
       const pages = 55;
 
       const reduxState = mockReduxState({
@@ -51,17 +52,59 @@ describe("redux/characters/selectors", () => {
     });
   });
 
-  describe("selectCharactersList", () => {
-    it("should return the charactersState", () => {
+  describe("selectCharactersPageContent", () => {
+    it("should return the pagesContent", () => {
       const characterId = 23;
       const character = mockCharacter({ id: characterId });
-      const list = { [characterId]: character };
+      const pagesContent = { 1: [character] };
 
       const reduxState = mockReduxState({
-        characters: { list },
+        characters: { pagesContent },
       });
 
-      expect(selectCharactersList(reduxState)).toEqual(list);
+      expect(selectCharactersPageContent(reduxState)).toEqual(pagesContent);
+    });
+  });
+
+  describe("selectShouldFetchPageSelector", () => {
+    it("should return a function", () => {
+      const characterId = 23;
+      const character = mockCharacter({ id: characterId });
+      const pagesContent = { 1: [character] };
+
+      const reduxState = mockReduxState({
+        characters: { pagesContent },
+      });
+
+      expect(typeof selectShouldFetchPageSelector(reduxState)).toBe("function");
+    });
+
+    it("should return a function that returns true if the page is empty", () => {
+      const characterId = 23;
+      const character = mockCharacter({ id: characterId });
+      const pagesContent = { 1: [character] };
+
+      const reduxState = mockReduxState({
+        characters: { pagesContent },
+      });
+
+      const shouldFetchPageSelector = selectShouldFetchPageSelector(reduxState);
+
+      expect(shouldFetchPageSelector(2)).toBe(true);
+    });
+
+    it("should return a function that returns false if the page has data", () => {
+      const characterId = 23;
+      const character = mockCharacter({ id: characterId });
+      const pagesContent = { 1: [character] };
+
+      const reduxState = mockReduxState({
+        characters: { pagesContent },
+      });
+
+      const shouldFetchPageSelector = selectShouldFetchPageSelector(reduxState);
+
+      expect(shouldFetchPageSelector(1)).toBe(false);
     });
   });
 });
