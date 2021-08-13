@@ -1,7 +1,13 @@
-type ApiData<I> = {
+type ApiDataSuccess<I> = {
   pages: number;
   results: ReadonlyArray<I>;
 };
+
+export type ApiDataError = {
+  error: string;
+};
+
+type ApiData<I> = ApiDataSuccess<I> | ApiDataError;
 
 type ApiOriginAndLocation = Record<"name" | "url", string>;
 

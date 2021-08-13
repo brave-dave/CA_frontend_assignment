@@ -2,10 +2,12 @@ import {
   fetchCharacters,
   updateCharacters,
   updateCharactersCurrentPage,
+  updateCharactersPageNotFound,
 } from "./actions";
 import {
   CharactersActionType,
   UpdateCharactersCurrentPagePayload,
+  UpdateCharactersPageNotFoundPayload,
   UpdateCharactersPayload,
 } from "./types";
 import {
@@ -16,9 +18,12 @@ import {
 } from "../testMocks";
 import fetchFromApi, { ApiCharactersData, ApiEndpoint } from "../../api";
 import { ReduxThunkDispatch } from "..";
-import createArray from "../../utils/createArray";
 
-jest.mock("../../api");
+jest.mock("../../api", () => {
+  const mockedModule = jest.fn();
+  Object.assign(mockedModule, jest.requireActual("../../api"));
+  return mockedModule;
+});
 
 function mockFetchFromApi(data: ApiCharactersData = { results: [], pages: 1 }) {
   (fetchFromApi as jest.Mock).mockImplementationOnce(
@@ -73,6 +78,27 @@ describe("redux/characters/actions", () => {
     );
   });
 
+  describe("updateCharactersPageNotFound", () => {
+    const payload: UpdateCharactersPageNotFoundPayload = {
+      page: 1,
+    };
+
+    it.each`
+      prop      | expectedValue
+      ${"type"} | ${CharactersActionType.UPDATE_PAGE_NOT_FOUND}
+      ${"page"} | ${payload.page}
+    `(
+      "should return the right $prop",
+      createTestActionCallback<UpdateCharactersPageNotFoundPayload>(
+        ({ prop, expectedValue }) => {
+          const action = updateCharactersPageNotFound(payload);
+
+          expect(action[prop]).toEqual(expectedValue);
+        }
+      )
+    );
+  });
+
   describe("fetchCharacters", () => {
     let dispatch: ReduxThunkDispatch;
 
@@ -114,6 +140,19 @@ describe("redux/characters/actions", () => {
           updateCharacters({ list: results, pages, currentPage })
         );
       });
+
+      describe("when data is not found", () => {
+        it("should dispatch updateCharactersPageNotFound", async () => {
+          const currentPage = 1;
+          const thunkAction = fetchCharacters(currentPage);
+          mockFetchFromApi({ error: "something" });
+          await thunkAction(dispatch, mockReduxState);
+
+          expect(dispatch).toHaveBeenCalledWith(
+            updateCharactersPageNotFound({ page: currentPage })
+          );
+        });
+      });
     });
 
     describe("when redux does have the data", () => {
@@ -122,8 +161,8 @@ describe("redux/characters/actions", () => {
         mockReduxState({
           characters: {
             currentPage: 5,
-            pagesContent: {
-              1: [mockCharacter()],
+            pagesStatuses: {
+              1: { content: [mockCharacter()] },
             },
           },
         });
