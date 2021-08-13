@@ -6,7 +6,9 @@ export default function fetchFromApi<E extends ApiEndpoint>(
   endpoint: E,
   pageOrId: number
 ): Promise<ApiDataMap[E]> {
-  return fetch(`${endpoint}${pageOrId}`).then((res) => res.json());
+  return fetch(`${endpoint}${pageOrId}`)
+    .then((res) => res.json())
+    .catch((e) => ({ error: e.message }));
 }
 
 export function isApiDataError<E extends ApiEndpoint>(
