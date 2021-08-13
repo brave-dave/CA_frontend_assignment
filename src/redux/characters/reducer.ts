@@ -1,4 +1,4 @@
-import { Character } from "./types";
+import { Character, UpdateCharactersCurrentPageAction } from "./types";
 import { MappedList } from "../../types";
 import {
   CharactersActionType,
@@ -11,7 +11,7 @@ export const charactersInitialState: CharactersState = {
   pagesContent: {},
 };
 
-type Actions = UpdateCharactersAction;
+type Actions = UpdateCharactersAction | UpdateCharactersCurrentPageAction;
 
 function getIdFromUrl(
   url: string,
@@ -48,6 +48,11 @@ export default function charactersReducer(
           ...state.pagesContent,
           [currentPage]: reduceCharactersPagesContent(list),
         } as MappedList<ReadonlyArray<Character>>,
+      };
+    case CharactersActionType.UPDATE_CURRENT_PAGE:
+      return {
+        ...state,
+        currentPage: action.currentPage,
       };
     default:
       return state;

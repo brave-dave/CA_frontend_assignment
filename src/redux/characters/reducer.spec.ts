@@ -1,7 +1,7 @@
-import { updateCharacters } from "./actions";
+import { updateCharacters, updateCharactersCurrentPage } from "./actions";
 import charactersReducer, { charactersInitialState } from "./reducer";
 import { mockApiCharacter, mockCharacter } from "../testMocks";
-import { UpdateCharactersPayload } from "./types";
+import { CharactersState, UpdateCharactersPayload } from "./types";
 import { ApiEndpoint } from "../../api";
 
 const mockAction: any = {};
@@ -133,6 +133,30 @@ describe("redux/characters/reducer", () => {
 
         expect(character.episode).toEqual([episodeId]);
       });
+    });
+  });
+
+  describe("updateCharactersCurrentPage", () => {
+    it("should return the expected currentPage", () => {
+      const currentPage = 6;
+      const state = charactersReducer(
+        charactersInitialState,
+        updateCharactersCurrentPage({ currentPage })
+      );
+
+      expect(state.currentPage).toEqual(currentPage);
+    });
+    it("should return the remainder of the state", () => {
+      const expectedRemainderOfState: CharactersState = {
+        pages: 53,
+        pagesContent: [],
+      };
+      const { currentPage, ...remainderOfState } = charactersReducer(
+        expectedRemainderOfState,
+        updateCharactersCurrentPage({ currentPage: 2 })
+      );
+
+      expect(remainderOfState).toEqual(expectedRemainderOfState);
     });
   });
 });
