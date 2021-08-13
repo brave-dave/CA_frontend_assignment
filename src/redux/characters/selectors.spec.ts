@@ -3,7 +3,7 @@ import { mockCharacter } from "../testMocks";
 import { CharactersState } from "./types";
 import {
   selectCharactersCurrentPage,
-  selectCharactersPageContent,
+  selectCharactersPagesStatuses,
   selectCharactersPages,
   selectCharactersState,
   selectShouldFetchPageSelector,
@@ -17,7 +17,7 @@ describe("redux/characters/selectors", () => {
       const expectedCharacterState: CharactersState = {
         pages: 77,
         currentPage: 2,
-        pagesContent: { 1: [character] },
+        pagesStatuses: { 1: { content: [character] } },
       };
 
       const reduxState = mockReduxState({
@@ -52,17 +52,17 @@ describe("redux/characters/selectors", () => {
     });
   });
 
-  describe("selectCharactersPageContent", () => {
-    it("should return the pagesContent", () => {
+  describe("selectCharactersPagesStatuses", () => {
+    it("should return the pageStatuses", () => {
       const characterId = 23;
       const character = mockCharacter({ id: characterId });
-      const pagesContent = { 1: [character] };
+      const pagesStatuses = { 1: { content: [character] } };
 
       const reduxState = mockReduxState({
-        characters: { pagesContent },
+        characters: { pagesStatuses },
       });
 
-      expect(selectCharactersPageContent(reduxState)).toEqual(pagesContent);
+      expect(selectCharactersPagesStatuses(reduxState)).toEqual(pagesStatuses);
     });
   });
 
@@ -70,10 +70,10 @@ describe("redux/characters/selectors", () => {
     it("should return a function", () => {
       const characterId = 23;
       const character = mockCharacter({ id: characterId });
-      const pagesContent = { 1: [character] };
+      const pagesStatuses = { 1: { content: [character] } };
 
       const reduxState = mockReduxState({
-        characters: { pagesContent },
+        characters: { pagesStatuses },
       });
 
       expect(typeof selectShouldFetchPageSelector(reduxState)).toBe("function");
@@ -82,10 +82,10 @@ describe("redux/characters/selectors", () => {
     it("should return a function that returns true if the page is empty", () => {
       const characterId = 23;
       const character = mockCharacter({ id: characterId });
-      const pagesContent = { 1: [character] };
+      const pagesStatuses = { 1: { content: [character] } };
 
       const reduxState = mockReduxState({
-        characters: { pagesContent },
+        characters: { pagesStatuses },
       });
 
       const shouldFetchPageSelector = selectShouldFetchPageSelector(reduxState);
@@ -96,10 +96,10 @@ describe("redux/characters/selectors", () => {
     it("should return a function that returns false if the page has data", () => {
       const characterId = 23;
       const character = mockCharacter({ id: characterId });
-      const pagesContent = { 1: [character] };
+      const pagesStatuses = { 1: { content: [character] } };
 
       const reduxState = mockReduxState({
-        characters: { pagesContent },
+        characters: { pagesStatuses },
       });
 
       const shouldFetchPageSelector = selectShouldFetchPageSelector(reduxState);

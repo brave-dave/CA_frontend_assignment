@@ -1,4 +1,8 @@
-import { updateCharacters, updateCharactersCurrentPage } from "./actions";
+import {
+  updateCharacters,
+  updateCharactersCurrentPage,
+  updateCharactersPageNotFound,
+} from "./actions";
 import charactersReducer, { charactersInitialState } from "./reducer";
 import { mockApiCharacter, mockCharacter } from "../testMocks";
 import { CharactersState, UpdateCharactersPayload } from "./types";
@@ -59,12 +63,14 @@ describe("redux/characters/reducer", () => {
           ...mockPayload,
           list: [apicharacterOne],
         };
-        const { pagesContent } = charactersReducer(
+        const { pagesStatuses } = charactersReducer(
           charactersInitialState,
           updateCharacters(payload)
         );
+        const [character] =
+          pagesStatuses[mockPayload.currentPage].content || [];
 
-        expect(pagesContent[mockPayload.currentPage][0]).toEqual(
+        expect(character).toEqual(
           expect.objectContaining(characterOneCommonValues)
         );
       });
@@ -81,12 +87,12 @@ describe("redux/characters/reducer", () => {
           ...mockPayload,
           list: [apicharacterOne],
         };
-        const { pagesContent } = charactersReducer(
+        const { pagesStatuses } = charactersReducer(
           charactersInitialState,
           updateCharacters(payload)
         );
-
-        const [character] = pagesContent[mockPayload.currentPage];
+        const [character] =
+          pagesStatuses[mockPayload.currentPage].content || [];
 
         expect(character.origin).toEqual(originId);
       });
@@ -103,12 +109,12 @@ describe("redux/characters/reducer", () => {
           ...mockPayload,
           list: [apicharacterOne],
         };
-        const { pagesContent } = charactersReducer(
+        const { pagesStatuses } = charactersReducer(
           charactersInitialState,
           updateCharacters(payload)
         );
-
-        const [character] = pagesContent[mockPayload.currentPage];
+        const [character] =
+          pagesStatuses[mockPayload.currentPage].content || [];
 
         expect(character.location).toEqual(locationId);
       });
@@ -125,11 +131,12 @@ describe("redux/characters/reducer", () => {
           ...mockPayload,
           list: [apicharacterOne],
         };
-        const { pagesContent } = charactersReducer(
+        const { pagesStatuses } = charactersReducer(
           charactersInitialState,
           updateCharacters(payload)
         );
-        const [character] = pagesContent[mockPayload.currentPage];
+        const [character] =
+          pagesStatuses[mockPayload.currentPage].content || [];
 
         expect(character.episode).toEqual([episodeId]);
       });
@@ -147,13 +154,40 @@ describe("redux/characters/reducer", () => {
       expect(state.currentPage).toEqual(currentPage);
     });
     it("should return the remainder of the state", () => {
-      const expectedRemainderOfState: CharactersState = {
-        pages: 53,
-        pagesContent: [],
+      const expectedRemainderOfState: Omit<CharactersState, "currentPage"> = {
+        pages: charactersInitialState.pages,
+        pagesStatuses: charactersInitialState.pagesStatuses,
       };
       const { currentPage, ...remainderOfState } = charactersReducer(
-        expectedRemainderOfState,
+        charactersInitialState,
         updateCharactersCurrentPage({ currentPage: 2 })
+      );
+
+      expect(remainderOfState).toEqual(expectedRemainderOfState);
+    });
+  });
+
+  describe("updateCharactersPageNotFound", () => {
+    it("should return the expected pageStatus", () => {
+      const page = 6;
+      const { pagesStatuses } = charactersReducer(
+        charactersInitialState,
+        updateCharactersPageNotFound({ page })
+      );
+
+      const pageStatus = pagesStatuses[page];
+
+      expect(pageStatus).toEqual({ isNotFound: true });
+    });
+
+    it("should return the remainder of the state", () => {
+      const expectedRemainderOfState: Omit<CharactersState, "pagesStatuses"> = {
+        pages: charactersInitialState.pages,
+        currentPage: charactersInitialState.currentPage,
+      };
+      const { pagesStatuses, ...remainderOfState } = charactersReducer(
+        charactersInitialState,
+        updateCharactersPageNotFound({ page: 2 })
       );
 
       expect(remainderOfState).toEqual(expectedRemainderOfState);

@@ -16,14 +16,14 @@ export const selectCharactersPages = createSelector(
   ({ pages }) => pages
 );
 
-export const selectCharactersPageContent = createSelector(
+export const selectCharactersPagesStatuses = createSelector(
   selectCharactersState,
-  ({ pagesContent }) => pagesContent
+  ({ pagesStatuses }) => pagesStatuses
 );
 
 export const selectShouldFetchPageSelector = createSelector(
-  selectCharactersPageContent,
-  (pagesContent) => {
-    return (page: number) => !pagesContent[page];
+  selectCharactersPagesStatuses,
+  (pagesStatuses) => {
+    return (page: number) => !pagesStatuses[page]?.content;
   }
 );

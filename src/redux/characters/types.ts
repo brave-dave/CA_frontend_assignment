@@ -25,8 +25,8 @@ type CharacterPageStatus =
   | CharacterPageStatusError;
 
 export type CharactersState = {
-  currentPage: number;
-  pages: number;
+  currentPage?: number;
+  pages?: number;
   pagesStatuses: MappedList<CharacterPageStatus>;
 };
 

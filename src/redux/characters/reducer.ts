@@ -1,5 +1,8 @@
-import { Character, UpdateCharactersCurrentPageAction } from "./types";
-import { MappedList } from "../../types";
+import {
+  Character,
+  UpdateCharactersCurrentPageAction,
+  UpdateCharactersPageNotFoundAction,
+} from "./types";
 import {
   CharactersActionType,
   CharactersState,
@@ -8,10 +11,13 @@ import {
 import { ApiCharacter, ApiEndpoint } from "../../api";
 
 export const charactersInitialState: CharactersState = {
-  pagesContent: {},
+  pagesStatuses: {},
 };
 
-type Actions = UpdateCharactersAction | UpdateCharactersCurrentPageAction;
+type Actions =
+  | UpdateCharactersAction
+  | UpdateCharactersCurrentPageAction
+  | UpdateCharactersPageNotFoundAction;
 
 function getIdFromUrl(
   url: string,
@@ -23,7 +29,7 @@ function getIdFromUrl(
 
 function reduceCharactersPagesContent(
   pagesContent: ReadonlyArray<ApiCharacter>
-): MappedList<Character> {
+): ReadonlyArray<Character> {
   return pagesContent.map((character) => ({
     ...character,
     origin: getIdFromUrl(character.origin.url, ApiEndpoint.LOCATION),
@@ -44,15 +50,23 @@ export default function charactersReducer(
       return {
         currentPage,
         pages,
-        pagesContent: {
-          ...state.pagesContent,
-          [currentPage]: reduceCharactersPagesContent(list),
-        } as MappedList<ReadonlyArray<Character>>,
+        pagesStatuses: {
+          ...state.pagesStatuses,
+          [currentPage]: { content: reduceCharactersPagesContent(list) },
+        },
       };
     case CharactersActionType.UPDATE_CURRENT_PAGE:
       return {
         ...state,
         currentPage: action.currentPage,
+      };
+    case CharactersActionType.UPDATE_PAGE_NOT_FOUND:
+      return {
+        ...state,
+        pagesStatuses: {
+          ...state.pagesStatuses,
+          [action.page]: { isNotFound: true },
+        },
       };
     default:
       return state;
