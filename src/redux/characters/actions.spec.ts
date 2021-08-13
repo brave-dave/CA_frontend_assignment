@@ -1,17 +1,37 @@
-import { updateCharacters, updateCharactersCurrentPage } from "./actions";
+import {
+  fetchCharacters,
+  updateCharacters,
+  updateCharactersCurrentPage,
+} from "./actions";
 import {
   CharactersActionType,
   UpdateCharactersCurrentPagePayload,
   UpdateCharactersPayload,
 } from "./types";
-import { createTestActionCallback, mockCharacter } from "../testMocks";
+import {
+  createTestActionCallback,
+  mockApiCharacter,
+  mockCharacter,
+  mockReduxState,
+} from "../testMocks";
+import fetchFromApi, { ApiCharactersData, ApiEndpoint } from "../../api";
+import { ReduxThunkDispatch } from "..";
+import createArray from "../../utils/createArray";
+
+jest.mock("../../api");
+
+function mockFetchFromApi(data: ApiCharactersData = { results: [], pages: 1 }) {
+  (fetchFromApi as jest.Mock).mockImplementationOnce(
+    () => new Promise((resolve) => resolve(data))
+  );
+}
 
 describe("redux/characters/actions", () => {
   describe("updateCharacters", () => {
     const payload: UpdateCharactersPayload = {
       currentPage: 1,
       pages: 53,
-      list: [mockCharacter()],
+      list: [mockApiCharacter()],
     };
 
     it.each`
@@ -51,5 +71,77 @@ describe("redux/characters/actions", () => {
         }
       )
     );
+  });
+
+  describe("fetchCharacters", () => {
+    let dispatch: ReduxThunkDispatch;
+
+    beforeEach(() => {
+      dispatch = jest.fn();
+    });
+
+    describe("when redux does not have the data", () => {
+      it("should fetch data from the api", async () => {
+        const thunkAction = fetchCharacters(1);
+        mockFetchFromApi();
+        await thunkAction(dispatch, mockReduxState);
+
+        expect(fetchFromApi).toHaveBeenCalledTimes(1);
+      });
+
+      it("should fetch data from the api with the right endpoint data", async () => {
+        const currentPage = 1;
+        const thunkAction = fetchCharacters(currentPage);
+        mockFetchFromApi();
+        await thunkAction(dispatch, mockReduxState);
+
+        expect(fetchFromApi).toHaveBeenCalledWith(
+          ApiEndpoint.CHARACTERS,
+          currentPage
+        );
+      });
+
+      it("should dispatch updateCharacters with the right data", async () => {
+        const currentPage = 1;
+        const thunkAction = fetchCharacters(currentPage);
+        const pages = 64;
+        const results = [mockApiCharacter()];
+        const data = { pages, results };
+        mockFetchFromApi(data);
+        await thunkAction(dispatch, mockReduxState);
+
+        expect(dispatch).toHaveBeenCalledWith(
+          updateCharacters({ list: results, pages, currentPage })
+        );
+      });
+    });
+
+    describe("when redux does have the data", () => {
+      const currentPage = 1;
+      const mockReduxStateWithData = () =>
+        mockReduxState({
+          characters: {
+            currentPage: 5,
+            pagesContent: {
+              1: [mockCharacter()],
+            },
+          },
+        });
+      it("should not fetch data from the api", async () => {
+        const thunkAction = fetchCharacters(currentPage);
+        await thunkAction(dispatch, mockReduxStateWithData);
+
+        expect(fetchFromApi).toHaveBeenCalledTimes(0);
+      });
+
+      it("should dispatch updateCharactersCurrentPage with the given currentPage", async () => {
+        const thunkAction = fetchCharacters(currentPage);
+        await thunkAction(dispatch, mockReduxStateWithData);
+
+        expect(dispatch).toHaveBeenCalledWith(
+          updateCharactersCurrentPage({ currentPage })
+        );
+      });
+    });
   });
 });

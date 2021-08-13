@@ -1,4 +1,5 @@
-import { createStore, combineReducers, CombinedState } from "redux";
+import { createStore, combineReducers, CombinedState, Store } from "redux";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import charactersReducer from "./characters";
 
 const rootReducer = combineReducers({ characters: charactersReducer });
@@ -10,6 +11,17 @@ export type ReduxState = ReturnType<typeof rootReducer> extends CombinedState<
 >
   ? S
   : never;
+
+export type ReduxActions = typeof store extends Store<_, infer A> ? A : never;
+
+export type ReduxThunkAction = ThunkAction<
+  void,
+  ReduxState,
+  void,
+  ReduxActions
+>;
+
+export type ReduxThunkDispatch = ThunkDispatch<ReduxState, void, ReduxActions>;
 
 export type ReduxSelector<R> = (state: ReduxState) => R;
 
