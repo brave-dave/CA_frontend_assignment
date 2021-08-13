@@ -1,7 +1,8 @@
 import { updateCharacters } from "./actions";
 import charactersReducer, { charactersInitialState } from "./reducer";
-import { mockCharacter } from "../testMocks";
+import { mockApiCharacter, mockCharacter } from "../testMocks";
 import { UpdateCharactersPayload } from "./types";
+import { ApiEndpoint } from "../../api";
 
 const mockAction: any = {};
 
@@ -47,27 +48,86 @@ describe("redux/characters/reducer", () => {
       expect(state.pages).toEqual(pages);
     });
 
-    it("should return the expected list", () => {
-      const characterIdOne = 32;
-      const characterOne = mockCharacter({ id: characterIdOne });
-      const characterIdTwo = 65;
-      const characterTwo = mockCharacter({ id: characterIdTwo });
+    describe("when returning a list of characters", () => {
+      it("should have the common values from the api", () => {
+        const characterIdOne = 32;
+        const apicharacterOne = mockApiCharacter({ id: characterIdOne });
+        const { origin, location, episode, ...characterOneCommonValues } =
+          mockCharacter({ id: characterIdOne });
 
-      const payload = {
-        ...mockPayload,
-        list: [characterOne, characterTwo],
-      };
-      const state = charactersReducer(
-        charactersInitialState,
-        updateCharacters(payload)
-      );
+        const payload = {
+          ...mockPayload,
+          list: [apicharacterOne],
+        };
+        const { list } = charactersReducer(
+          charactersInitialState,
+          updateCharacters(payload)
+        );
 
-      const expectedList = {
-        [characterIdOne]: characterOne,
-        [characterIdTwo]: characterTwo,
-      };
+        expect(list[characterIdOne]).toEqual(
+          expect.objectContaining(characterOneCommonValues)
+        );
+      });
 
-      expect(state.list).toEqual(expectedList);
+      it("should have the origin id", () => {
+        const originId = 21;
+        const originUrl = `${ApiEndpoint.LOCATION}${originId}`;
+        const characterIdOne = 32;
+        const apicharacterOne = mockApiCharacter({
+          id: characterIdOne,
+          origin: { name: "string", url: originUrl },
+        });
+        const payload = {
+          ...mockPayload,
+          list: [apicharacterOne],
+        };
+        const { list } = charactersReducer(
+          charactersInitialState,
+          updateCharacters(payload)
+        );
+
+        expect(list[characterIdOne].origin).toEqual(originId);
+      });
+
+      it("should have the location id", () => {
+        const locationId = 21;
+        const locationUrl = `${ApiEndpoint.LOCATION}${locationId}`;
+        const characterIdOne = 32;
+        const apicharacterOne = mockApiCharacter({
+          id: characterIdOne,
+          location: { name: "string", url: locationUrl },
+        });
+        const payload = {
+          ...mockPayload,
+          list: [apicharacterOne],
+        };
+        const { list } = charactersReducer(
+          charactersInitialState,
+          updateCharacters(payload)
+        );
+
+        expect(list[characterIdOne].location).toEqual(locationId);
+      });
+
+      it("should have the episode id", () => {
+        const episodeId = 21;
+        const episodeUrl = `${ApiEndpoint.EPISODE}${episodeId}`;
+        const characterIdOne = 32;
+        const apicharacterOne = mockApiCharacter({
+          id: characterIdOne,
+          episode: [episodeUrl],
+        });
+        const payload = {
+          ...mockPayload,
+          list: [apicharacterOne],
+        };
+        const { list } = charactersReducer(
+          charactersInitialState,
+          updateCharacters(payload)
+        );
+
+        expect(list[characterIdOne].episode).toEqual([episodeId]);
+      });
     });
   });
 });

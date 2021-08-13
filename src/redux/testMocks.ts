@@ -1,4 +1,5 @@
 import { ReduxState } from ".";
+import { ApiCharacter, ApiEndpoint } from "../api";
 import { Character } from "./characters";
 
 type PartialReduxState = {
@@ -18,20 +19,32 @@ export function mockReduxState({
   };
 }
 
-export function mockCharacter(
-  partialCharacter: Partial<Character> = {}
-): Character {
+export function mockApiCharacter(
+  partialCharacter: Partial<ApiCharacter> = {}
+): ApiCharacter {
   return {
-    id: 19,
+    id: 1,
     name: "string",
     status: "string",
     species: "string",
     type: "string",
     gender: "string",
-    origin: 1,
-    location: 3,
+    origin: { name: "string", url: `${ApiEndpoint.LOCATION}1` },
+    location: { name: "string", url: `${ApiEndpoint.LOCATION}2` },
     image: "string",
-    episode: [5],
+    episode: [`${ApiEndpoint.EPISODE}3`],
+    ...partialCharacter,
+  };
+}
+
+export function mockCharacter(
+  partialCharacter: Partial<Character> = {}
+): Character {
+  return {
+    ...mockApiCharacter(),
+    origin: 1,
+    location: 2,
+    episode: [3],
     ...partialCharacter,
   };
 }

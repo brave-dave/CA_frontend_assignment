@@ -1,4 +1,15 @@
+import { ApiCharacter } from "../../api";
 import { MappedList } from "../../types";
+
+interface CharacterPropsToId {
+  origin: number;
+  location: number;
+  episode: ReadonlyArray<number>;
+}
+
+export interface Character
+  extends Omit<ApiCharacter, keyof CharacterPropsToId>,
+    CharacterPropsToId {}
 
 export type CharacterState = {
   currentPage?: number;
@@ -6,26 +17,14 @@ export type CharacterState = {
   list: MappedList<Character>;
 };
 
-export interface Character {
-  id: number;
-  name: string;
-  status: string;
-  species: string;
-  type: string;
-  gender: string;
-  origin: number;
-  location: number;
-  image: string;
-  episode: ReadonlyArray<number>;
-}
-
 export enum CharactersActionType {
   UPDATE = "characters/update",
   UPDATE_CURRENT_PAGE = "characters/update_current_page",
 }
 
-export interface UpdateCharactersPayload extends Required<CharacterState> {
-  list: ReadonlyArray<Character>;
+export interface UpdateCharactersPayload
+  extends Omit<Required<CharacterState>, "list"> {
+  list: ReadonlyArray<ApiCharacter>;
 }
 
 export interface UpdateCharactersAction extends UpdateCharactersPayload {
