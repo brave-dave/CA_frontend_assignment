@@ -1,6 +1,6 @@
 import { mockReduxState } from "../testMocks";
 import { mockCharacter } from "../testMocks";
-import { CharacterState } from "./types";
+import { CharactersState } from "./types";
 import {
   selectCharactersCurrentPage,
   selectCharactersList,
@@ -13,7 +13,7 @@ describe("redux/characters/selectors", () => {
     it("should return the charactersState", () => {
       const characterId = 39;
       const character = mockCharacter({ id: characterId });
-      const expectedCharacterState: CharacterState = {
+      const expectedCharacterState: CharactersState = {
         pages: 77,
         currentPage: 2,
         list: { [characterId]: character },

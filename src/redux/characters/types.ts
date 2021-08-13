@@ -11,10 +11,10 @@ export interface Character
   extends Omit<ApiCharacter, keyof CharacterPropsToId>,
     CharacterPropsToId {}
 
-export type CharacterState = {
+export type CharactersState = {
   currentPage?: number;
   pages?: number;
-  list: MappedList<Character>;
+  pagesContent: MappedList<ReadonlyArray<Character>>;
 };
 
 export enum CharactersActionType {
@@ -23,7 +23,7 @@ export enum CharactersActionType {
 }
 
 export interface UpdateCharactersPayload
-  extends Omit<Required<CharacterState>, "list"> {
+  extends Omit<Required<CharactersState>, "pagesContent"> {
   list: ReadonlyArray<ApiCharacter>;
 }
 
@@ -32,7 +32,7 @@ export interface UpdateCharactersAction extends UpdateCharactersPayload {
 }
 
 export interface UpdateCharactersCurrentPagePayload
-  extends Pick<CharacterState, "currentPage"> {}
+  extends Pick<CharactersState, "currentPage"> {}
 
 export interface UpdateCharactersCurrentPageAction
   extends UpdateCharactersCurrentPagePayload {

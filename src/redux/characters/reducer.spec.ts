@@ -59,12 +59,12 @@ describe("redux/characters/reducer", () => {
           ...mockPayload,
           list: [apicharacterOne],
         };
-        const { list } = charactersReducer(
+        const { pagesContent } = charactersReducer(
           charactersInitialState,
           updateCharacters(payload)
         );
 
-        expect(list[characterIdOne]).toEqual(
+        expect(pagesContent[mockPayload.currentPage][0]).toEqual(
           expect.objectContaining(characterOneCommonValues)
         );
       });
@@ -81,12 +81,14 @@ describe("redux/characters/reducer", () => {
           ...mockPayload,
           list: [apicharacterOne],
         };
-        const { list } = charactersReducer(
+        const { pagesContent } = charactersReducer(
           charactersInitialState,
           updateCharacters(payload)
         );
 
-        expect(list[characterIdOne].origin).toEqual(originId);
+        const [character] = pagesContent[mockPayload.currentPage];
+
+        expect(character.origin).toEqual(originId);
       });
 
       it("should have the location id", () => {
@@ -101,12 +103,14 @@ describe("redux/characters/reducer", () => {
           ...mockPayload,
           list: [apicharacterOne],
         };
-        const { list } = charactersReducer(
+        const { pagesContent } = charactersReducer(
           charactersInitialState,
           updateCharacters(payload)
         );
 
-        expect(list[characterIdOne].location).toEqual(locationId);
+        const [character] = pagesContent[mockPayload.currentPage];
+
+        expect(character.location).toEqual(locationId);
       });
 
       it("should have the episode id", () => {
@@ -121,12 +125,13 @@ describe("redux/characters/reducer", () => {
           ...mockPayload,
           list: [apicharacterOne],
         };
-        const { list } = charactersReducer(
+        const { pagesContent } = charactersReducer(
           charactersInitialState,
           updateCharacters(payload)
         );
+        const [character] = pagesContent[mockPayload.currentPage];
 
-        expect(list[characterIdOne].episode).toEqual([episodeId]);
+        expect(character.episode).toEqual([episodeId]);
       });
     });
   });

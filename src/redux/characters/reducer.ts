@@ -2,13 +2,13 @@ import { Character } from "./types";
 import { MappedList } from "../../types";
 import {
   CharactersActionType,
-  CharacterState,
+  CharactersState,
   UpdateCharactersAction,
 } from "./types";
 import { ApiCharacter, ApiEndpoint } from "../../api";
 
-export const charactersInitialState: CharacterState = {
-  list: {},
+export const charactersInitialState: CharactersState = {
+  pagesContent: {},
 };
 
 type Actions = UpdateCharactersAction;
@@ -21,37 +21,33 @@ function getIdFromUrl(
   return Number(id);
 }
 
-function reduceCharactersList(
-  stateList: MappedList<Character>,
-  actionList: ReadonlyArray<ApiCharacter>
+function reduceCharactersPagesContent(
+  pagesContent: ReadonlyArray<ApiCharacter>
 ): MappedList<Character> {
-  return actionList.reduce(
-    (finalList, character) => ({
-      ...finalList,
-      [character.id]: {
-        ...character,
-        origin: getIdFromUrl(character.origin.url, ApiEndpoint.LOCATION),
-        location: getIdFromUrl(character.location.url, ApiEndpoint.LOCATION),
-        episode: character.episode.map((episode) =>
-          getIdFromUrl(episode, ApiEndpoint.EPISODE)
-        ),
-      },
-    }),
-    stateList
-  );
+  return pagesContent.map((character) => ({
+    ...character,
+    origin: getIdFromUrl(character.origin.url, ApiEndpoint.LOCATION),
+    location: getIdFromUrl(character.location.url, ApiEndpoint.LOCATION),
+    episode: character.episode.map((episode) =>
+      getIdFromUrl(episode, ApiEndpoint.EPISODE)
+    ),
+  }));
 }
 
 export default function charactersReducer(
   state = charactersInitialState,
   action: Actions
-) {
+): CharactersState {
   switch (action.type) {
     case CharactersActionType.UPDATE:
       const { currentPage, pages, list } = action;
       return {
         currentPage,
         pages,
-        list: reduceCharactersList(state.list, list),
+        pagesContent: {
+          ...state.pagesContent,
+          [currentPage]: reduceCharactersPagesContent(list),
+        } as MappedList<ReadonlyArray<Character>>,
       };
     default:
       return state;

@@ -1,8 +1,8 @@
 import { ReduxSelector } from "..";
-import { CharacterState } from "./types";
+import { CharactersState } from "./types";
 import { createSelector } from "reselect";
 
-export const selectCharactersState: ReduxSelector<CharacterState> = ({
+export const selectCharactersState: ReduxSelector<CharactersState> = ({
   characters,
 }) => characters;
 
