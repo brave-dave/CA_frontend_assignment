@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     fontSize: 225,
-    color: theme.palette.primary.main,
+    color: theme.palette.text.primary,
   },
 }));
 
@@ -33,7 +33,7 @@ export default function ErrorPage() {
         </Typography>
       </Box>
       <Box className={classes.flexItem}>
-        <ButtonLink to={"/"} variant="contained" size="large" color="primary">
+        <ButtonLink to={"/"} variant="contained" size="large" color="inherit">
           Homepage
         </ButtonLink>
       </Box>

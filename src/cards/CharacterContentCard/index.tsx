@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) =>
     cardHeader: {
       flex: "1 1 0",
     },
-    cardContent: {},
   })
 );
 
@@ -52,7 +51,7 @@ export default function CharacterContentCard({
           noWrap: true,
         }}
       />
-      <CardContent className={classes.cardContent}>{children}</CardContent>
+      <CardContent>{children}</CardContent>
     </Card>
   );
 }

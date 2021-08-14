@@ -1,42 +1,13 @@
-import {
-  Box,
-  createStyles,
-  makeStyles,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
+import { Box, makeStyles, Tooltip, Typography } from "@material-ui/core";
 import { Character } from "../../redux/characters";
-import { green } from "@material-ui/core/colors";
-import { red } from "@material-ui/core/colors";
 import StatusIcon from "./StatusIcon";
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    avatar: {
-      display: "inline-block",
-      verticalAlign: "middle",
-      marginRight: theme.spacing(1),
-      width: 100,
-      height: 100,
-    },
-    title: {
-      display: "inline-block",
-      verticalAlign: "middle",
-    },
-    statusIcon: {
-      display: "inline-block",
-      verticalAlign: "middle",
-      fontSize: 15,
-      marginLeft: theme.spacing(1),
-    },
-    statusIconAlive: {
-      color: green[500],
-    },
-    statusIconDead: {
-      color: red[500],
-    },
-  })
-);
+const useStyles = makeStyles({
+  title: {
+    display: "inline-block",
+    verticalAlign: "middle",
+  },
+});
 
 interface CharacterTitleProps
   extends Pick<Character, "name" | "species" | "status" | "gender"> {}

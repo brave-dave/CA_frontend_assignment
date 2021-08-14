@@ -16,9 +16,6 @@ import CharacterContentCard from "../CharacterContentCard";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
-    contentCard: {
-      display: "flex",
-    },
     chip: {
       margin: theme.spacing(0.5),
       [theme.breakpoints.down("xs")]: {

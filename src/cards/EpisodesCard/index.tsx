@@ -13,9 +13,6 @@ const useStyles = makeStyles((theme) =>
       padding: 0,
       width: "100%",
     },
-    contentCard: {
-      display: "flex",
-    },
     episodeName: {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
