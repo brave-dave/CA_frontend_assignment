@@ -29,11 +29,14 @@ export type ApiCharacter = {
 };
 export type ApiCharactersData = ApiData<ApiCharacter>;
 
-export type ApiLocation = {};
-export type ApiLocationData = ApiData<ApiLocation>;
+export type ApiLocation = {
+  id: number;
+  name: string;
+  type: string;
+  dimension: string;
+};
 
 export type ApiEpisode = {};
-export type ApiEpisodeData = ApiData<ApiEpisode>;
 
 export enum ApiEndpoint {
   CHARACTERS = "https://rickandmortyapi.com/api/character?page=",
@@ -43,6 +46,6 @@ export enum ApiEndpoint {
 
 export type ApiDataMap = {
   [ApiEndpoint.CHARACTERS]: ApiCharactersData;
-  [ApiEndpoint.LOCATION]: ApiLocationData;
-  [ApiEndpoint.EPISODE]: ApiEpisodeData;
+  [ApiEndpoint.LOCATION]: ApiLocation | ApiDataError;
+  [ApiEndpoint.EPISODE]: ApiEpisode | ApiDataError;
 };

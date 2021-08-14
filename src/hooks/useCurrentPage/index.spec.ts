@@ -1,8 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import useCurrentPage from ".";
-import { ReduxState } from "../../redux";
-import { mockCharacter, mockReduxState } from "../../redux/testMocks";
 import { testHook } from "../../testsUtils";
 jest.mock("react-router-dom", () => ({ useParams: jest.fn() }));
 

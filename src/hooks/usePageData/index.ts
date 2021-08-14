@@ -6,7 +6,6 @@ import {
   selectCharactersPagesStatuses,
   selectCharactersPages,
 } from "../../redux/characters";
-import useEffectOnce from "../useEffectOnce";
 
 type UsePageDataConfig = { page?: number };
 

@@ -68,7 +68,7 @@ describe("redux/characters/reducer", () => {
           updateCharacters(payload)
         );
         const [character] =
-          pagesStatuses[mockPayload.currentPage].content || [];
+          pagesStatuses[mockPayload.currentPage]?.content || [];
 
         expect(character).toEqual(
           expect.objectContaining(characterOneCommonValues)
@@ -92,7 +92,7 @@ describe("redux/characters/reducer", () => {
           updateCharacters(payload)
         );
         const [character] =
-          pagesStatuses[mockPayload.currentPage].content || [];
+          pagesStatuses[mockPayload.currentPage]?.content || [];
 
         expect(character.origin).toEqual(originId);
       });
@@ -114,7 +114,7 @@ describe("redux/characters/reducer", () => {
           updateCharacters(payload)
         );
         const [character] =
-          pagesStatuses[mockPayload.currentPage].content || [];
+          pagesStatuses[mockPayload.currentPage]?.content || [];
 
         expect(character.location).toEqual(locationId);
       });
@@ -136,7 +136,7 @@ describe("redux/characters/reducer", () => {
           updateCharacters(payload)
         );
         const [character] =
-          pagesStatuses[mockPayload.currentPage].content || [];
+          pagesStatuses[mockPayload.currentPage]?.content || [];
 
         expect(character.episode).toEqual([episodeId]);
       });

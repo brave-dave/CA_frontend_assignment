@@ -7,8 +7,12 @@ import {
 } from "redux";
 import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import charactersReducer from "./characters";
+import locationsReducer from "./locations";
 
-const rootReducer = combineReducers({ characters: charactersReducer });
+const rootReducer = combineReducers({
+  characters: charactersReducer,
+  locations: locationsReducer,
+});
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
