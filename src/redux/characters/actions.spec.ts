@@ -25,7 +25,9 @@ jest.mock("../../api", () => {
   return mockedModule;
 });
 
-function mockFetchFromApi(data: ApiCharactersData = { results: [], pages: 1 }) {
+function mockFetchFromApi(
+  data: ApiCharactersData = { results: [], info: { pages: 1 } }
+) {
   (fetchFromApi as jest.Mock).mockImplementationOnce(
     () => new Promise((resolve) => resolve(data))
   );
@@ -132,7 +134,7 @@ describe("redux/characters/actions", () => {
         const thunkAction = fetchCharacters(currentPage);
         const pages = 64;
         const results = [mockApiCharacter()];
-        const data = { pages, results };
+        const data = { info: { pages }, results };
         mockFetchFromApi(data);
         await thunkAction(dispatch, mockReduxState);
 

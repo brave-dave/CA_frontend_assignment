@@ -40,7 +40,8 @@ export function fetchCharacters(currentPage: number): ReduxThunkAction {
         dispatch(updateCharactersPageNotFound({ page: currentPage }));
         return;
       }
-      const { pages, results } = response;
+      const { info, results } = response;
+      const { pages } = info;
       dispatch(updateCharacters({ currentPage, pages, list: results }));
     } else {
       dispatch(updateCharactersCurrentPage({ currentPage }));

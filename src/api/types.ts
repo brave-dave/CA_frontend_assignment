@@ -1,5 +1,9 @@
-type ApiDataSuccess<I> = {
+type ApiDataInfo = {
   pages: number;
+};
+
+type ApiDataSuccess<I> = {
+  info: ApiDataInfo;
   results: ReadonlyArray<I>;
 };
 
