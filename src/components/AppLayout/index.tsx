@@ -8,7 +8,7 @@ interface AppLayoutProps {
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: theme.spacing(2),
+    margin: `${theme.spacing(2)}px auto`,
     overflow: "hidden",
   },
 }));

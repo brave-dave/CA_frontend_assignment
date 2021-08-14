@@ -1,5 +1,6 @@
 import { Box } from "@material-ui/core";
 import CharacterCard from "../../cards/CharacterCard";
+import { Pagination } from "../../components/Pagination";
 import usePageData, {
   isPageDataLoading,
   isPageDataNotFound,
@@ -13,13 +14,15 @@ export default function CharactersListPage() {
   if (isPageDataLoading(pageData)) return <LoadingPage />;
   if (isPageDataNotFound(pageData)) return <ErrorPage />;
 
-  const { content } = pageData;
+  const { content, pages = 1 } = pageData;
 
   return (
     <Box>
-      {content.map((props) => (
-        <CharacterCard key={props.id} {...props} />
-      ))}
+      <Pagination pages={pages} currentPage={33}>
+        {content.map((props) => (
+          <CharacterCard key={props.id} {...props} />
+        ))}
+      </Pagination>
     </Box>
   );
 }
