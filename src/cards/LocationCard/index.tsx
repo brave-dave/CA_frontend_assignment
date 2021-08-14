@@ -59,7 +59,7 @@ function LocationContent({
     <Box display="flex" justifyContent="flex-end" flexWrap="wrap">
       <DetailChip value={dimension} initial="D" />
       <DetailChip value={type} initial="T" />
-      <DetailChip value={`${residents.length} habitants`} initial="R" />
+      <DetailChip value={`${residents.length} residents`} initial="R" />
     </Box>
   );
 }
