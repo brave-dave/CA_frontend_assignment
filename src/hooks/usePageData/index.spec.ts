@@ -20,7 +20,7 @@ describe("hooks/usePageData", () => {
     it("should return loading pageData", async () => {
       mockUseSelector();
       mockUseDispatch(jest.fn(() => new Promise(() => {})));
-      const getPageData = await testHook(usePageData, { currentPage: 1 });
+      const getPageData = await testHook(usePageData, { page: 1 });
 
       expect(getPageData()).toEqual({ loading: true });
     });
@@ -34,19 +34,19 @@ describe("hooks/usePageData", () => {
         })
       );
       mockUseDispatch();
-      const getPageData = await testHook(usePageData, { currentPage: 1 });
+      const getPageData = await testHook(usePageData, { page: 1 });
 
       expect(getPageData()).toEqual({ isNotFound: true });
     });
   });
 
   describe("when page has no data", () => {
-    it("should return error pageData", async () => {
+    it("should return loading pageData", async () => {
       mockUseSelector();
       mockUseDispatch();
-      const getPageData = await testHook(usePageData, { currentPage: 1 });
+      const getPageData = await testHook(usePageData, { page: 1 });
 
-      expect(getPageData()).toEqual({ isNotFound: true });
+      expect(getPageData()).toEqual({ loading: true });
     });
   });
 
@@ -61,9 +61,9 @@ describe("hooks/usePageData", () => {
         })
       );
       mockUseDispatch();
-      const getPageData = await testHook(usePageData, { currentPage: 1 });
+      const getPageData = await testHook(usePageData, { page: 1 });
 
-      expect(getPageData()).toEqual({ pages, content });
+      expect(getPageData()).toEqual({ pages, content, currentPage: 1 });
     });
   });
 });

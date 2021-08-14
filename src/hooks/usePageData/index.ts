@@ -8,11 +8,12 @@ import {
 } from "../../redux/characters";
 import useEffectOnce from "../useEffectOnce";
 
-type UsePageDataConfig = { currentPage: number };
+type UsePageDataConfig = { page?: number };
 
 interface PageDataSuccess {
   content: ReadonlyArray<Character>;
   pages?: number;
+  currentPage: number;
 }
 
 interface PageDataLoading {
@@ -26,31 +27,27 @@ interface PageDataError {
 type PageData = PageDataSuccess | PageDataError | PageDataLoading;
 
 export default function usePageData({
-  currentPage,
+  page: currentPage,
 }: UsePageDataConfig): PageData {
-  const [loading, setLoading] = React.useState(true);
   const dispatch = useDispatch();
   const pages = useSelector(selectCharactersPages);
   const pageStatuses = useSelector(selectCharactersPagesStatuses);
 
   const pageStatus = React.useMemo(
-    () => pageStatuses[currentPage] || { isNotFound: true, content: undefined },
+    () => currentPage && pageStatuses[currentPage],
     [pageStatuses, currentPage]
   );
 
-  useEffectOnce(() => {
-    (async () => {
-      await dispatch(fetchCharacters(currentPage));
-      setLoading(false);
-    })();
-  });
+  React.useEffect(() => {
+    currentPage && dispatch(fetchCharacters(currentPage));
+  }, [currentPage, dispatch]);
 
-  if (loading) return { loading };
+  if (!pageStatus) return { loading: true };
 
   const { isNotFound, content = [] } = pageStatus;
-  if (isNotFound) return { isNotFound };
+  if (isNotFound || !currentPage) return { isNotFound: true };
 
-  return { content, pages };
+  return { content, pages, currentPage };
 }
 
 export function isPageDataLoading(
