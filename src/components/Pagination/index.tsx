@@ -44,7 +44,11 @@ const PaginationPages = React.memo<PageButtonsProps>(
       <Box className={classes.paginationPages}>
         <PaginationArrow direction="back" path={previousPagePath} />
         {pageButtons.map((page) => (
-          <PaginationButton key={page} active={page === `${currentPage}`}>
+          <PaginationButton
+            key={page}
+            active={page === `${currentPage}`}
+            path={getPagePath(page)}
+          >
             {page}
           </PaginationButton>
         ))}
