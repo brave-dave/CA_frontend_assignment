@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) =>
     },
     chip: {
       margin: theme.spacing(0.5),
+      [theme.breakpoints.down("xs")]: {
+        display: "none",
+      },
     },
   })
 );

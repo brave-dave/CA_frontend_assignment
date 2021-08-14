@@ -12,6 +12,13 @@ import StatusIcon from "./StatusIcon";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
+    avatar: {
+      display: "inline-block",
+      verticalAlign: "middle",
+      marginRight: theme.spacing(1),
+      width: 100,
+      height: 100,
+    },
     title: {
       display: "inline-block",
       verticalAlign: "middle",

@@ -13,10 +13,12 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     card: {
       display: "flex",
+      flexWrap: "revert",
     },
     cardHeader: {
       flex: "1 1 0",
     },
+    cardContent: {},
   })
 );
 
@@ -40,8 +42,8 @@ export default function CharacterContentCard({
     <Card className={classNames(className, classes.card)}>
       <CardHeader
         avatar={<Icon />}
-        className={classes.cardHeader}
         title={title}
+        className={classes.cardHeader}
         subheader={subheader}
         titleTypographyProps={{
           variant: "h6",
@@ -50,7 +52,7 @@ export default function CharacterContentCard({
           noWrap: true,
         }}
       />
-      <CardContent>{children}</CardContent>
+      <CardContent className={classes.cardContent}>{children}</CardContent>
     </Card>
   );
 }
