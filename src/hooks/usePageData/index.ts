@@ -52,3 +52,15 @@ export default function usePageData({
 
   return { content, pages };
 }
+
+export function isPageDataLoading(
+  pageData: PageData
+): pageData is PageDataLoading {
+  return pageData.hasOwnProperty("loading");
+}
+
+export function isPageDataNotFound(
+  pageData: PageData
+): pageData is PageDataError {
+  return pageData.hasOwnProperty("isNotFound");
+}

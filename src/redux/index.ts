@@ -1,10 +1,16 @@
-import { createStore, combineReducers, CombinedState, Store } from "redux";
-import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import {
+  createStore,
+  combineReducers,
+  CombinedState,
+  Store,
+  applyMiddleware,
+} from "redux";
+import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import charactersReducer from "./characters";
 
 const rootReducer = combineReducers({ characters: charactersReducer });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export type ReduxState = ReturnType<typeof rootReducer> extends CombinedState<
   infer S
@@ -12,7 +18,7 @@ export type ReduxState = ReturnType<typeof rootReducer> extends CombinedState<
   ? S
   : never;
 
-export type ReduxActions = typeof store extends Store<_, infer A> ? A : never;
+export type ReduxActions = typeof store extends Store<any, infer A> ? A : never;
 
 export type ReduxThunkAction = ThunkAction<
   void,
