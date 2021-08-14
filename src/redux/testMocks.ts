@@ -1,6 +1,7 @@
 import { ReduxState } from ".";
-import { ApiCharacter, ApiEndpoint, ApiLocation } from "../api";
+import { ApiCharacter, ApiEndpoint, ApiEpisode, ApiLocation } from "../api";
 import { Character } from "./characters";
+import { Episode } from "./episodes";
 import { Location } from "./locations";
 
 type PartialReduxState = {
@@ -10,6 +11,7 @@ type PartialReduxState = {
 export function mockReduxState({
   characters,
   locations,
+  episodes,
 }: PartialReduxState = {}): ReduxState {
   return {
     characters: {
@@ -21,6 +23,10 @@ export function mockReduxState({
     locations: {
       locations: {},
       ...locations,
+    },
+    episodes: {
+      episodes: {},
+      ...episodes,
     },
   };
 }
@@ -71,6 +77,20 @@ export function mockLocation(
   partialLocation: Partial<Location> = {}
 ): Location {
   return mockApiLocation(partialLocation);
+}
+
+export function mockApiEpisode(
+  partialApiEpisode: Partial<ApiEpisode> = {}
+): ApiEpisode {
+  return {
+    id: 1,
+    name: "string",
+    ...partialApiEpisode,
+  };
+}
+
+export function mockEpisode(partialApiEpisode: Partial<Episode> = {}): Episode {
+  return mockApiEpisode(partialApiEpisode);
 }
 
 type TestActionCallbackProps<K, V> = {

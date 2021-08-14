@@ -36,7 +36,10 @@ export type ApiLocation = {
   dimension: string;
 };
 
-export type ApiEpisode = {};
+export type ApiEpisode = {
+  id: number;
+  name: string;
+};
 
 export enum ApiEndpoint {
   CHARACTERS = "https://rickandmortyapi.com/api/character?page=",

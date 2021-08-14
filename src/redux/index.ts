@@ -7,11 +7,13 @@ import {
 } from "redux";
 import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import charactersReducer from "./characters";
+import episodesReducer from "./episodes";
 import locationsReducer from "./locations";
 
 const rootReducer = combineReducers({
   characters: charactersReducer,
   locations: locationsReducer,
+  episodes: episodesReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
