@@ -1,16 +1,3 @@
-// import useCharacterUrlAndPage from "../useCharacterUrlAndPage";
-// import useDataFromUrl from "../useDataFromUrl";
-// import { testHook } from "../../testsUtils";
-// import usePageData from ".";
-// import {
-//   Character,
-//   CharacterResponseData,
-//   CharacterResponseDataResult,
-//   PageData,
-// } from "./types";
-// jest.mock("../useCharacterUrlAndPage", () => jest.fn());
-// jest.mock("../useDataFromUrl", () => jest.fn());
-
 import { useDispatch, useSelector } from "react-redux";
 import usePageData from ".";
 import { ReduxState } from "../../redux";
