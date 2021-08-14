@@ -33,6 +33,7 @@ export type ApiLocation = {
   id: number;
   name: string;
   type: string;
+  residents: ReadonlyArray<string>;
   dimension: string;
 };
 
