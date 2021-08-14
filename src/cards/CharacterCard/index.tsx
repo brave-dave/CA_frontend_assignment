@@ -4,8 +4,8 @@ import {
   CardMedia,
   createStyles,
   makeStyles,
-  Typography,
 } from "@material-ui/core";
+import CharacterTitle from "../../components/CharacterTitle";
 import { Character } from "../../redux/characters";
 
 const useStyles = makeStyles((theme) =>
@@ -34,22 +34,14 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-export default function CharacterCard({
-  name,
-  image,
-  species,
-  status,
-  gender,
-}: Character) {
+export default function CharacterCard({ image, ...restOfProps }: Character) {
   const classes = useStyles();
 
   return (
     <Card className={classes.card}>
       <CardMedia component="img" className={classes.image} image={image} />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="h2">
-          {name} / {species} / {status} / {gender}
-        </Typography>
+        <CharacterTitle {...restOfProps} />
       </CardContent>
     </Card>
   );
