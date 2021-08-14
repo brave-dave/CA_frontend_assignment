@@ -49,7 +49,7 @@ export default function EpisodesCard({ episodes }: EpisodesCardProps) {
     ({ index, style }) => {
       const id = episodes[index];
       return (
-        <ListItem button style={style} key={index}>
+        <ListItem style={style} key={index}>
           <EpisodeName key={`${index}-${id}`} id={id} />
         </ListItem>
       );
